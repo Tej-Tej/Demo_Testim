@@ -1,6 +1,6 @@
 image: node:16.13.0
 stages:
-   - e2e
+  - e2e
 testim:
   stage: e2e
   image: docker:git
@@ -15,4 +15,4 @@ testim:
     paths:
       - testim-report.xml
     reports:
-       junit: testim-report.xml
+      junit: testim-report.xml
