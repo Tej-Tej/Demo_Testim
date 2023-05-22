@@ -1,13 +1,18 @@
-name: Testim E2E
-on: [push]
-
-jobs:
-    run-testimio-cli:
-        runs-on: ubuntu-latest
-        steps:
-            - uses: actions/checkout@v2
-            - uses: actions/setup-node@v2
-              with:
-                node-version: '16.14.0'
-            - run: npm install -g @testim/testim-cli
-            - run: testim --token "yOnFVIAwCKjuUnhLpxGnyVHmb7JUq3kBBGL2f6DZfWClTktf3R" --project "pDajo8ERd0CG1KCVkahM" --grid "Testim-Grid"
+image: node:16.13.0
+stages:
+   - e2e
+testim:
+  stage: e2e
+  image: docker:git
+  variables:
+    TESTIM_DOCKER: testim/docker-cli
+  services:
+    - docker:stable-dind
+  script:
+    - docker pull $TESTIM_DOCKER
+    - docker run --rm -v "$(pwd)":/opt/testim-runner $TESTIM_DOCKER --token "yOnFVIAwCKjuUnhLpxGnyVHmb7JUq3kBBGL2f6DZfWClTktf3R" --project "pDajo8ERd0CG1KCVkahM" --grid "Testim-Grid" -r /opt/testim-runner/testim-report.xml
+  artifacts:
+    paths:
+      - testim-report.xml
+    reports:
+       junit: testim-report.xml
